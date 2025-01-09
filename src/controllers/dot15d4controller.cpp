@@ -346,7 +346,6 @@ Dot15d4Packet* Dot15d4Controller::wazabeeDecoder(uint8_t *buffer, uint8_t size,u
 			source = CORRECTOR;
 		}
 	}
-
 	return new Dot15d4Packet(output_buffer+1,output_buffer[1]+1-2,timestamp,source,this->channel, rssi, fcsValue, rssi);
 }
 
@@ -363,11 +362,15 @@ void Dot15d4Controller::sendJammingReport(uint32_t timestamp) {
 
 void Dot15d4Controller::onReceive(uint32_t timestamp, uint8_t size, uint8_t *buffer, CrcValue crcValue, uint8_t rssi) {
 	Dot15d4Packet* pkt = NULL;
+
 	if (this->attackStatus.attack == DOT15D4_ATTACK_CORRECTION && this->attackStatus.running) {
 		pkt = this->wazabeeDecoder(buffer,size,timestamp, crcValue, rssi);
 	}
 	else {
 		uint8_t lqi = buffer[buffer[0]-1];
+
+        /* Flip Dot15d4 FCS bytes. */
+        crcValue.value = ((crcValue.value & 0xff00) >> 8) | ((crcValue.value & 0xff) << 8);
 
 		pkt = new Dot15d4Packet(buffer,1+buffer[0]-2,timestamp,RECEIVER,this->channel,rssi,crcValue, (uint8_t)(lqi > 63 ? 255 : lqi*4));
 	}
