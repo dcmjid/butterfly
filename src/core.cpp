@@ -500,7 +500,7 @@ void Core::processBLEInputMessage(whad::ble::BleMsg bleMsg) {
                 {
                     if (this->bleController->getState() == SIMULATING_MASTER || this->bleController->getState() == PERFORMING_MITM) {
                         this->bleController->setMasterPayload(query.getPdu().getBytes(), query.getPdu().getSize());
-                        while (!max_retry && !this->bleController->isMasterPayloadTransmitted()) {--max_retry;}
+                        while (max_retry>0 && !this->bleController->isMasterPayloadTransmitted()) {--max_retry;}
                         if (max_retry != 0) {
                             response = new whad::generic::Success();
                         } else {
