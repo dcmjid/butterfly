@@ -638,6 +638,10 @@ void BLEController::start() {
 		this->setChannel(37);
 		this->setHardwareConfiguration(0x8e89bed6, 0x555555);
 
+        /* Disable hardware address filtering. */
+        this->setFilter(true, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF);
+
+        /* Configure radio if active scanning is required. */
 		if (this->activeScanning) {
 			this->radio->enableAutoTXafterRX();
 			this->radio->setInterFrameSpacing(145);
@@ -1124,6 +1128,7 @@ void BLEController::setHardwareConfiguration(uint32_t accessAddress, uint32_t cr
 }
 
 void BLEController::startScanning(bool active) {
+    /* Enable scanning. */
 	this->controllerState = SCANNING;
 	this->activeScanning = active;
 }
@@ -1300,7 +1305,8 @@ bool BLEController::checkSynchronization() {
 
 		// We are not synchronized anymore
 		this->sync = false;
-		// We are not waiting for an update
+		
+        // We are not waiting for an update
 		this->clearConnectionUpdate();
 
 		if (this->controllerState == CONNECTION_INITIATION || this->controllerState == SIMULATING_MASTER) {
@@ -1322,9 +1328,11 @@ bool BLEController::checkSynchronization() {
 		else {
 			// Reconfigure radio to receive advertisements
 			this->setHardwareConfiguration(0x8e89bed6,0x555555);
-			// Reset the channel
+			
+            // Reset the channel
 			this->setChannel(this->lastAdvertisingChannel);
 
+            // Back to advertisements sniffing
 			this->controllerState = SNIFFING_ADVERTISEMENTS;
 
 			//Core::instance->getLedModule()->off(LED2);

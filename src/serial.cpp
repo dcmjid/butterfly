@@ -135,10 +135,12 @@ SerialComm::SerialComm(void) {
 void SerialComm::init() {
 
 	ret_code_t ret;
-	static const app_usbd_config_t usbdConfig = {
-		.ev_state_proc = SerialComm::usbdHandler
-	};
-	ret = nrf_drv_clock_init();
+
+    /* Configure USBD event handler. */
+	static app_usbd_config_t usbdConfig;
+    usbdConfig.ev_state_proc = SerialComm::usbdHandler;
+	
+    ret = nrf_drv_clock_init();
 	APP_ERROR_CHECK(ret);
 
 	nrf_drv_clock_lfclk_request(NULL);
