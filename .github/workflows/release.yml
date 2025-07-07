@@ -2,11 +2,9 @@ name: C/C++ compile & release CI
 
 on:
   push:
-    branches: [ "main" ]
     tags:
     - "v*.*.*"
   pull_request:
-    branches: [ "main" ]
     tags:
     - "v*.*.*"
 
@@ -21,9 +19,9 @@ jobs:
         submodules: recursive
     - name: Install nRF util
       run: |
-        mkdir -p .tool
-        wget 'https://files.nordicsemi.com/ui/api/v1/download?repoKey=swtools&gitpath=external/nrfutil/executables/x86_64-unknown-linux-gnu/nrfutil'
-        mv nrfutil .tool/nrfutil
+        mkdir -p .toolhttps://files.nordicsemi.com/ui/api/v1/download?repoKey=swtools&path=external/nrfutil/executables/x86_64-unknown-linux-gnu/nrfutil
+        wget -r -nd --no-parent 'https://files.nordicsemi.com/ui/api/v1/download?repoKey=swtools&gitpath=external/nrfutil/executables/x86_64-unknown-linux-gnu/nrfutil'
+        mv download\?repoKey\=swtools\&path\=external%2Fnrfutil%2Fexecutables%2Fx86_64-unknown-linux-gnu%2Fnrfutil .tool/nrfutil
         chmod +x .tool/nrfutil
         .tool/nrfutil install nrf5sdk-tools --force
     - name: Install Toolchain
