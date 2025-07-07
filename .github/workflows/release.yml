@@ -22,7 +22,7 @@ jobs:
     - name: Install nRF util
       run: |
         mkdir -p .tool
-        wget https://files.nordicsemi.com/ui/api/v1/download?repoKey=swtools&path=external/nrfutil/executables/x86_64-unknown-linux-gnu/nrfutil
+        wget 'https://files.nordicsemi.com/ui/api/v1/download?repoKey=swtools&gitpath=external/nrfutil/executables/x86_64-unknown-linux-gnu/nrfutil'
         mv nrfutil .tool/nrfutil
         chmod +x .tool/nrfutil
         .tool/nrfutil install nrf5sdk-tools --force
