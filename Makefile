@@ -2,7 +2,7 @@ PROJECT_NAME     := injectable
 TARGETS          := nrf52840_xxaa
 OUTPUT_DIRECTORY := build
 DIST_DIRECTORY 	 := dist
-SDK_ROOT		 := ../../nRF5_SDK_17.1.0_ddde560/
+SDK_ROOT		 := ../../.sdks/nRF5_SDK_17.1.0_ddde560/
 
 ifeq ($(PLATFORM),)
     PLATFORM = BOARD_PCA10059
@@ -298,10 +298,14 @@ LIB_FILES += -lc -lnosys -lm
 
 # Default target - first one defined
 default: nrf52840_xxaa
+
+dist: nrf52840_xxaa
 ifeq ($(PLATFORM),BOARD_PCA10059)
+	mkdir -p $(DIST_DIRECTORY)
 	cp $(OUTPUT_DIRECTORY)/nrf52840_xxaa.hex $(DIST_DIRECTORY)/pca10059.hex
 endif
 ifeq ($(PLATFORM),BOARD_MDK_DONGLE)
+	mkdir -p $(DIST_DIRECTORY)
 	cp $(OUTPUT_DIRECTORY)/nrf52840_xxaa.hex $(DIST_DIRECTORY)/mdk-dongle.hex
 endif
 # Print all targets that can be built
@@ -327,7 +331,7 @@ send: create_builddir
 ifeq ($(PLATFORM),BOARD_PCA10059)
 	@echo "Generating DFU package ..."
 	rm -f $(OUTPUT_DIRECTORY)/dfu.zip
-	nrfutil pkg generate --hw-version 52 --sd-req 0x00 --debug-mode --application $(DIST_DIRECTORY)/pca10059.hex $(OUTPUT_DIRECTORY)/dfu.zip
+	nrfutil pkg generate --hw-version 52 --sd-req 0x00 --debug-mode --application $(OUTPUT_DIRECTORY)/nrf52840_xxaa.hex $(OUTPUT_DIRECTORY)/dfu.zip
 	@echo "Flashing device ..."
 	nrfutil dfu usb-serial -pkg $(OUTPUT_DIRECTORY)/dfu.zip -p $(SERIAL_PORT) -b 115200
 	@echo "Done :)"
@@ -336,7 +340,7 @@ ifeq ($(PLATFORM),BOARD_MDK_DONGLE)
 ifneq ($(MDK_MOUNTPOINT),)
 	@echo "Generating DFU package ..."
 	rm -f $(OUTPUT_DIRECTORY)/flash.uf2
-	python3 $(CONF_DIR)/uf2conv.py $(DIST_DIRECTORY)/mdk-dongle.hex -c -f 0xADA52840 -o $(OUTPUT_DIRECTORY)/flash.uf2
+	python3 $(CONF_DIR)/uf2conv.py $(OUTPUT_DIRECTORY)/nrf52840_xxaa.hex -c -f 0xADA52840 -o $(OUTPUT_DIRECTORY)/flash.uf2
 	@echo "Flashing device ..."
 	cp $(OUTPUT_DIRECTORY)/flash.uf2 $(MDK_MOUNTPOINT)
 	@echo "Done :)"
