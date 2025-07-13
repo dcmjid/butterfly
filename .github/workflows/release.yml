@@ -1,4 +1,4 @@
-name: C/C++ compile & release CI for me
+name: C/C++ compile & release CI for me one
 
 on:
   push:
