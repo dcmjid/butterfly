@@ -2,11 +2,6 @@ name: C/C++ compile & release CI for me
 
 on:
   push:
-    tags:
-    - "v*.*.*"
-  pull_request:
-    tags:
-    - "v*.*.*"
 
 jobs:
   build:
